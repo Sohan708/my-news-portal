@@ -1,26 +1,38 @@
-import { auth } from '@/lib/auth';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { auth } from '@/lib/auth';
 
-export default auth((req) => {
-    const { pathname } = req.nextUrl;
-    const session = req.auth;
+export async function middleware(request: NextRequest) {
+    const { pathname } = request.nextUrl;
 
-    // Protect admin routes
+    // Admin routes protection
     if (pathname.startsWith('/admin')) {
-        if (!session) {
-            return NextResponse.redirect(new URL('/auth/signin', req.url));
+        // Allow signin page
+        if (pathname === '/admin/signin') {
+            return NextResponse.next();
         }
 
-        // Check if user has admin or editor role
-        if (session.user.role !== 'admin' && session.user.role !== 'editor') {
-            return NextResponse.redirect(new URL('/', req.url));
+        // Check authentication
+        const session = await auth();
+
+        if (!session) {
+            const signInUrl = new URL('/admin/signin', request.url);
+            signInUrl.searchParams.set('callbackUrl', pathname);
+            return NextResponse.redirect(signInUrl);
+        }
+
+        // Check if user is admin
+        const userRole = session.user?.role;
+        if (userRole !== 'admin' && userRole !== 'editor') {
+            return NextResponse.redirect(new URL('/admin/signin', request.url));
         }
     }
 
     return NextResponse.next();
-});
+}
 
 export const config = {
-    matcher: ['/admin/:path*', '/api/admin/:path*'],
+    matcher: [
+        '/admin/:path*',
+    ],
 };
