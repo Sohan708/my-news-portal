@@ -54,7 +54,8 @@ async function getRelatedPosts(categoryId: any, currentPostId: any): Promise<IPo
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const post = await getPost(params.slug);
+    const { slug } = await params;
+    const post = await getPost(slug);
 
     if (!post) {
         return {
@@ -83,7 +84,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ArticlePage({ params }: PageProps) {
-    const post = await getPost(params.slug);
+    const { slug } = await params;
+    const post = await getPost(slug);
 
     if (!post) {
         notFound();

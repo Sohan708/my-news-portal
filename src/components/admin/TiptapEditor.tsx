@@ -47,6 +47,7 @@ export default function TiptapEditor({ content, onChange, placeholder = 'Write y
             }),
         ],
         content,
+        immediatelyRender: false, // Fix SSR hydration mismatch
         editorProps: {
             attributes: {
                 class: 'prose prose-lg dark:prose-invert max-w-none focus:outline-none min-h-[300px] px-4 py-3',

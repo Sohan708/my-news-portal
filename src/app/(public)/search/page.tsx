@@ -71,9 +71,10 @@ export const metadata: Metadata = {
 };
 
 export default async function SearchPage({ searchParams }: PageProps) {
-    const query = searchParams.q || '';
-    const categorySlug = searchParams.category;
-    const currentPage = Number(searchParams.page) || 1;
+    const params = await searchParams;
+    const query = params.q || '';
+    const categorySlug = params.category;
+    const currentPage = Number(params.page) || 1;
 
     let results = { posts: [] as IPost[], total: 0, pages: 0 };
 
@@ -157,8 +158,8 @@ export default async function SearchPage({ searchParams }: PageProps) {
                                                     href={`/search?q=${query}&page=${page}${categorySlug ? `&category=${categorySlug}` : ''
                                                         }`}
                                                     className={`px-4 py-2 rounded-lg ${page === currentPage
-                                                            ? 'bg-primary text-primary-foreground'
-                                                            : 'bg-muted hover:bg-muted/80'
+                                                        ? 'bg-primary text-primary-foreground'
+                                                        : 'bg-muted hover:bg-muted/80'
                                                         }`}
                                                 >
                                                     {page}

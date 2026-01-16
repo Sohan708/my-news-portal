@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { auth } from '@/lib/auth';
+import { getToken } from 'next-auth/jwt';
 
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
@@ -12,17 +12,20 @@ export async function middleware(request: NextRequest) {
             return NextResponse.next();
         }
 
-        // Check authentication
-        const session = await auth();
+        // Check authentication using JWT token (edge-compatible)
+        const token = await getToken({
+            req: request,
+            secret: process.env.NEXTAUTH_SECRET,
+        });
 
-        if (!session) {
+        if (!token) {
             const signInUrl = new URL('/admin/signin', request.url);
             signInUrl.searchParams.set('callbackUrl', pathname);
             return NextResponse.redirect(signInUrl);
         }
 
-        // Check if user is admin
-        const userRole = session.user?.role;
+        // Check if user is admin or editor
+        const userRole = token.role;
         if (userRole !== 'admin' && userRole !== 'editor') {
             return NextResponse.redirect(new URL('/admin/signin', request.url));
         }
@@ -32,7 +35,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: [
-        '/admin/:path*',
-    ],
+    matcher: ['/admin/:path*'],
 };

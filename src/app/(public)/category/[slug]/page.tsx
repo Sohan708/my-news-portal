@@ -55,7 +55,8 @@ async function getCategoryPosts(categoryId: any, page: number = 1, limit: number
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const category = await getCategory(params.slug);
+    const { slug } = await params;
+    const category = await getCategory(slug);
 
     if (!category) {
         return {
@@ -70,7 +71,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function CategoryPage({ params, searchParams }: PageProps) {
-    const category = await getCategory(params.slug);
+    const { slug } = await params;
+    const category = await getCategory(slug);
 
     if (!category) {
         notFound();
@@ -132,8 +134,8 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
                                             key={page}
                                             href={`/category/${params.slug}?page=${page}`}
                                             className={`px-4 py-2 rounded-lg ${page === currentPage
-                                                    ? 'bg-primary text-primary-foreground'
-                                                    : 'bg-muted hover:bg-muted/80'
+                                                ? 'bg-primary text-primary-foreground'
+                                                : 'bg-muted hover:bg-muted/80'
                                                 }`}
                                         >
                                             {page}
