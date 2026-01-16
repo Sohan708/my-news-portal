@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, FileText, FolderTree, Tags, Image, Settings, BarChart3, LogOut, Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import { signOut } from 'next-auth/react';
 
 const menuItems = [
     { icon: Home, label: 'Dashboard', href: '/admin' },
@@ -89,10 +90,7 @@ export default function AdminSidebar() {
                             <span className="font-medium">View Site</span>
                         </Link>
                         <button
-                            onClick={() => {
-                                // TODO: Implement logout
-                                window.location.href = '/api/auth/signout';
-                            }}
+                            onClick={() => signOut({ callbackUrl: '/admin/signin' })}
                             className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"
                         >
                             <LogOut size={20} />

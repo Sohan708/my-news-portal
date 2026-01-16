@@ -70,8 +70,8 @@ export const config = {
         },
     },
     pages: {
-        signIn: '/auth/signin',
-        error: '/auth/error',
+        signIn: '/admin/signin',
+        error: '/admin/signin',
     },
     session: {
         strategy: 'jwt',

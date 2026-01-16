@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Save, Eye, Trash2 } from 'lucide-react';
+import { ArrowLeft, Save, Trash2 } from 'lucide-react';
+import TiptapEditor from '@/components/admin/TiptapEditor';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 interface EditPostPageProps {
     params: { id: string };
@@ -243,21 +245,14 @@ export default function EditPostPage({ params }: EditPostPageProps) {
 
                         {/* Content Editor */}
                         <div>
-                            <label htmlFor="content" className="block text-sm font-medium mb-2">
+                            <label className="block text-sm font-medium mb-2">
                                 Content *
                             </label>
-                            <textarea
-                                id="content"
-                                value={formData.content}
-                                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                required
-                                rows={20}
-                                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary font-mono text-sm"
-                                placeholder="Write your content here (HTML supported)..."
+                            <TiptapEditor
+                                content={formData.content}
+                                onChange={(html) => setFormData({ ...formData, content: html })}
+                                placeholder="Write your article content..."
                             />
-                            <p className="text-xs text-muted-foreground mt-1">
-                                Tip: You can use HTML tags for formatting
-                            </p>
                         </div>
 
                         {/* SEO Section */}
@@ -300,8 +295,8 @@ export default function EditPostPage({ params }: EditPostPageProps) {
                             <div className="text-sm">
                                 <span
                                     className={`inline-block px-3 py-1 rounded-full ${formData.status === 'published'
-                                            ? 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400'
-                                            : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400'
+                                        ? 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400'
+                                        : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400'
                                         }`}
                                 >
                                     {formData.status}
@@ -311,21 +306,12 @@ export default function EditPostPage({ params }: EditPostPageProps) {
 
                         {/* Featured Image */}
                         <div className="bg-card border border-border rounded-lg p-4">
-                            <h3 className="font-bold mb-3">Featured Image</h3>
-                            <input
-                                type="url"
+                            <ImageUpload
                                 value={formData.featuredImage}
-                                onChange={(e) => setFormData({ ...formData, featuredImage: e.target.value })}
-                                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                                placeholder="Image URL"
+                                onChange={(url) => setFormData({ ...formData, featuredImage: url })}
+                                label="Featured Image"
+                                aspectRatio="16/9"
                             />
-                            {formData.featuredImage && (
-                                <img
-                                    src={formData.featuredImage}
-                                    alt="Preview"
-                                    className="mt-3 w-full rounded-lg"
-                                />
-                            )}
                         </div>
 
                         {/* Category */}
